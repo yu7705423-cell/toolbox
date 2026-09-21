@@ -40,6 +40,8 @@ Branch 选 `main`、目录 `/ (root)` → Save，等一两分钟。
 | 卡片 | 栏 | 仓库 | 地址 |
 |---|---|---|---|
 | 番外生成器 | DIY | `fanwai` | `/fanwai/` |
+| 世界书生成器 | DIY | 就在本仓库 `worldbook/` | `/toolbox/worldbook/` |
+| 世界书库 | 收纳 | 就在本仓库 `worldbook/` | `/toolbox/worldbook/library.html` |
 | 图床工具箱 | DIY | `imgtest` | `/imgtest/imagehosttoolkit.html` |
 | 喵喵书阁 | 收纳 | `read` | `/read/` |
 | Chat Archive | 收纳 | `memory` | `/memory/chat-archive.html` |
@@ -98,6 +100,7 @@ Branch 选 `main`、目录 `/ (root)` → Save，等一两分钟。
 
 ```
 index.html    合集页本体
+worldbook/    世界书生成器 + 世界书库（见 worldbook/README.md）
 theme.css     共用的颜色/圆角/间距/字体
 sw.js         离线外壳缓存。改了 index.html 或 theme.css 要把 VERSION 加一
 manifest.json 加到主屏用的

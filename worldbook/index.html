@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+  世界书生成器。只管写：生成、审查、修订、试运行、模型画像。
+  存储那一半（导入、导出、改名、批量、整库备份）在 library.html 里，
+  两个页面同源、共用同一个 IndexedDB。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="世界书生成器">
+<meta name="theme-color" content="#0f1115">
+<title>世界书生成器</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="topbar">
+      <button id="navToggle" class="icon-btn" aria-label="菜单">☰</button>
+      <h1 class="brand">世界书生成器</h1>
+      <div class="topbar-right">
+        <span id="presetBadge" class="badge" title="当前主模型">未配置</span>
+      </div>
+    </header>
+    <div class="body">
+      <nav id="nav" class="nav">
+        <a class="nav-item" data-route="generate">生成</a>
+        <a class="nav-item" data-route="versions">版本</a>
+        <a class="nav-item" data-route="insights">洞察</a>
+        <a class="nav-item" data-route="settings">设置</a>
+        <a class="nav-item" data-route="help">说明</a>
+        <a class="nav-item nav-cross" href="library.html">世界书库 ↗</a>
+        <div class="nav-foot">
+          <div class="nav-hint">数据只存在本机浏览器里</div>
+        </div>
+      </nav>
+      <div id="navScrim" class="nav-scrim"></div>
+      <main id="view" class="view"></main>
+    </div>
+  </div>
+  <div id="toast" class="toast"></div>
+  <div id="modalRoot"></div>
+  <script src="core.js"></script>
+  <script src="gen.js"></script>
+</body>
+</html>

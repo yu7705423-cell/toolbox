@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--
+  世界书库。只管存：自制区、导入区、查看、改名、导出、批量打包、整库备份。
+  不调任何模型，没配 API 也能用。生成那一半在 index.html。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="世界书库">
+<meta name="theme-color" content="#0f1115">
+<title>世界书库</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="topbar">
+      <h1 class="brand">世界书库</h1>
+      <div class="topbar-right">
+        <a class="badge" href="index.html">← 生成器</a>
+      </div>
+    </header>
+    <div class="body">
+      <main id="view" class="view"></main>
+    </div>
+  </div>
+  <div id="toast" class="toast"></div>
+  <div id="modalRoot"></div>
+  <script src="core.js"></script>
+  <script src="lib.js"></script>
+</body>
+</html>
