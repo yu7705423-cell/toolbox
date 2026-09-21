@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="工具箱">
-<meta name="theme-color" content="#F7F6F3">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="theme.css">
@@ -14,7 +14,10 @@
 <style>
 /*
   合集页自己的排版。颜色一律从 theme.css 的 --tb-* 里取，
-  这里不新发明任何色值 —— 要换皮就去改那个文件。
+  这里不新发明任何色值 —— 纯黑白，要换皮就去改那个文件。
+
+  卡片刻意压得很扁：一眼扫过去是「图标 + 名字」，说明只留一行，
+  路径那种平时没人看的信息收进整理模式里。
 */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -32,24 +35,21 @@ body{
 
 /* ---------- 顶部 ---------- */
 header{
-  padding:calc(var(--tb-s6) + env(safe-area-inset-top)) 0 var(--tb-s4);
-  display:flex;align-items:flex-end;gap:var(--tb-s3);
+  padding:calc(var(--tb-s5) + env(safe-area-inset-top)) 0 var(--tb-s4);
+  display:flex;align-items:flex-end;gap:var(--tb-s2);
 }
 .title{flex:1;min-width:0}
-h1{
-  margin:0;font-size:26px;line-height:1.2;font-weight:600;
-  letter-spacing:.02em;
-}
+h1{margin:0;font-size:24px;line-height:1.2;font-weight:600;letter-spacing:.02em}
 .sub{
-  margin:var(--tb-s1) 0 0;font-family:var(--tb-mono);
-  font-size:11px;color:var(--tb-ink-faint);letter-spacing:.06em;
+  margin:2px 0 0;font-family:var(--tb-mono);
+  font-size:10.5px;color:var(--tb-ink-faint);letter-spacing:.08em;
 }
 .icon-btn{
-  flex:none;width:36px;height:36px;border:1px solid var(--tb-line);
+  flex:none;width:34px;height:34px;border:1px solid var(--tb-line-strong);
   border-radius:var(--tb-r-pill);background:var(--tb-surface);
-  color:var(--tb-ink-soft);font-size:15px;line-height:1;
+  color:var(--tb-ink-soft);font-size:14px;line-height:1;
   display:grid;place-items:center;cursor:pointer;
-  transition:background .15s,color .15s,border-color .15s;
+  transition:background .12s,color .12s,border-color .12s;
 }
 .icon-btn:active{background:var(--tb-sunk)}
 .icon-btn[aria-pressed="true"]{
@@ -57,93 +57,79 @@ h1{
 }
 
 /* ---------- 搜索 ---------- */
-.search{
-  position:relative;margin-bottom:var(--tb-s4);
-}
+.search{position:relative;margin-bottom:var(--tb-s2)}
 .search input{
-  width:100%;padding:10px 12px 10px 34px;font-size:15px;
+  width:100%;padding:9px 12px 9px 32px;font-size:15px;
   font-family:inherit;color:var(--tb-ink);
-  background:var(--tb-surface);border:1px solid var(--tb-line);
-  border-radius:var(--tb-r-m);outline:none;
-  transition:border-color .15s;
+  background:var(--tb-surface-2);border:1px solid transparent;
+  border-radius:var(--tb-r-m);outline:none;transition:border-color .12s;
 }
-.search input:focus{border-color:var(--tb-line-strong)}
+.search input:focus{border-color:var(--tb-line-strong);background:var(--tb-surface)}
 .search input::placeholder{color:var(--tb-ink-faint)}
 .search svg{
-  position:absolute;left:11px;top:50%;transform:translateY(-50%);
-  width:15px;height:15px;stroke:var(--tb-ink-faint);fill:none;stroke-width:1.8;
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;stroke:var(--tb-ink-faint);fill:none;stroke-width:1.8;
 }
 
-/* ---------- 卡片网格 ---------- */
-.cards{
-  display:grid;gap:var(--tb-s3);
-  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+/* ---------- 分栏标题 ---------- */
+.sec{display:flex;align-items:center;gap:var(--tb-s3);margin:var(--tb-s5) 0 var(--tb-s3)}
+.sec b{
+  font-family:var(--tb-mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.16em;color:var(--tb-ink-faint);
 }
+.sec i{flex:1;height:1px;background:var(--tb-line)}
+
+/* ---------- 卡片 ---------- */
+.cards{display:grid;gap:var(--tb-s2);grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .card{
-  position:relative;display:flex;flex-direction:column;gap:var(--tb-s2);
-  padding:var(--tb-s4);text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;gap:6px;
+  padding:var(--tb-s3);text-decoration:none;color:inherit;
   background:var(--tb-surface);border:1px solid var(--tb-line);
-  border-radius:var(--tb-r-l);box-shadow:var(--tb-shadow-1);
-  transition:transform .12s,box-shadow .15s,border-color .15s;
+  border-radius:var(--tb-r-l);
+  transition:transform .1s,border-color .12s;
 }
-.card:active{transform:scale(.985);box-shadow:var(--tb-shadow-2)}
+.card:active{transform:scale(.985);border-color:var(--tb-line-strong)}
+.head{display:flex;align-items:center;gap:9px;min-width:0}
 .glyph{
-  width:38px;height:38px;border-radius:var(--tb-r-m);
-  display:grid;place-items:center;
-  font-size:18px;font-weight:600;letter-spacing:0;
-  color:var(--tint);
-  background:color-mix(in srgb,var(--tint) 13%,transparent);
+  flex:none;width:28px;height:28px;border-radius:8px;
+  display:grid;place-items:center;font-size:13px;font-weight:600;
+  color:var(--tb-ink);border:1px solid var(--tb-line-strong);
 }
-.card .name{font-size:15px;font-weight:600;letter-spacing:.01em}
-.card .desc{
-  font-size:12.5px;color:var(--tb-ink-soft);line-height:1.5;
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+/* 置顶的卡只有一个记号：图标反白。不加别的装饰 */
+.card.pin .glyph{background:var(--tb-ink);color:var(--tb-bg);border-color:var(--tb-ink)}
+.name{
+  font-size:14px;font-weight:600;letter-spacing:.01em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-.card .host{
-  font-family:var(--tb-mono);font-size:10px;color:var(--tb-ink-faint);
-  letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+.desc{
+  font-size:11.5px;color:var(--tb-ink-soft);line-height:1.45;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
-.card.empty-url{border-style:dashed}
-.card.empty-url .host{color:var(--tb-danger)}
+.path{
+  display:none;font-family:var(--tb-mono);font-size:10px;color:var(--tb-ink-faint);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+body.editing .path{display:block}
+.card.no-url{border-style:dashed}
+.card.no-url .path{display:block;color:var(--tb-ink-soft)}
 
-/* 色板：亮色一套，暗色一套（暗底下原色太闷，整体提亮） */
-.t-violet{--tint:#6E5A8C}
-.t-rose  {--tint:#B5533C}
-.t-green {--tint:#5A6B5A}
-.t-blue  {--tint:#5A6B8C}
-.t-honey {--tint:#8C7A4A}
-.t-ink   {--tint:#2B2A28}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .t-violet{--tint:#B49BD4}
-  :root:not([data-theme="light"]) .t-rose  {--tint:#D08A76}
-  :root:not([data-theme="light"]) .t-green {--tint:#8FA68F}
-  :root:not([data-theme="light"]) .t-blue  {--tint:#8FA0C4}
-  :root:not([data-theme="light"]) .t-honey {--tint:#C4B182}
-  :root:not([data-theme="light"]) .t-ink   {--tint:#C9C5BE}
-}
-:root[data-theme="dark"] .t-violet{--tint:#B49BD4}
-:root[data-theme="dark"] .t-rose  {--tint:#D08A76}
-:root[data-theme="dark"] .t-green {--tint:#8FA68F}
-:root[data-theme="dark"] .t-blue  {--tint:#8FA0C4}
-:root[data-theme="dark"] .t-honey {--tint:#C4B182}
-:root[data-theme="dark"] .t-ink   {--tint:#C9C5BE}
-
-/* ---------- 编辑模式 ---------- */
+/* ---------- 整理模式 ---------- */
 .card-tools{
-  display:none;gap:var(--tb-s1);margin-top:var(--tb-s1);
+  display:none;flex-wrap:wrap;gap:4px;margin-top:2px;
   padding-top:var(--tb-s2);border-top:1px solid var(--tb-line);
 }
 body.editing .card-tools{display:flex}
 body.editing .card{cursor:default}
 .card-tools button{
-  flex:1;padding:5px 0;font-size:11px;font-family:var(--tb-mono);
+  flex:1 1 28px;padding:4px 0;font-size:10.5px;font-family:var(--tb-mono);
   color:var(--tb-ink-soft);background:var(--tb-surface-2);
   border:1px solid var(--tb-line);border-radius:var(--tb-r-s);cursor:pointer;
 }
 .card-tools button:active{background:var(--tb-sunk)}
+.card-tools button.on{background:var(--tb-accent);border-color:var(--tb-accent);color:var(--tb-accent-ink)}
 .add-tile{
-  display:none;align-items:center;justify-content:center;gap:var(--tb-s2);
-  min-height:96px;padding:var(--tb-s4);
+  display:none;align-items:center;justify-content:center;
+  min-height:72px;padding:var(--tb-s3);width:100%;margin-top:var(--tb-s3);
   border:1px dashed var(--tb-line-strong);border-radius:var(--tb-r-l);
   background:transparent;color:var(--tb-ink-soft);
   font-family:var(--tb-font);font-size:13px;cursor:pointer;
@@ -154,71 +140,69 @@ body.editing .add-tile{display:flex}
 footer{
   margin-top:var(--tb-s6);padding-top:var(--tb-s4);
   border-top:1px solid var(--tb-line);
-  font-family:var(--tb-mono);font-size:11px;color:var(--tb-ink-faint);
-  letter-spacing:.04em;
+  font-family:var(--tb-mono);font-size:10.5px;color:var(--tb-ink-faint);
+  letter-spacing:.04em;line-height:1.9;
 }
-footer .row{display:flex;flex-wrap:wrap;gap:var(--tb-s3);margin-bottom:var(--tb-s3)}
+footer .row{display:flex;flex-wrap:wrap;gap:var(--tb-s3);margin-bottom:var(--tb-s2)}
 footer button{
   padding:0;font:inherit;color:var(--tb-ink-soft);
-  background:none;border:none;border-bottom:1px solid var(--tb-line-strong);
-  cursor:pointer;
+  background:none;border:none;border-bottom:1px solid var(--tb-line-strong);cursor:pointer;
 }
 footer button:active{color:var(--tb-ink)}
-.empty-note{
-  padding:var(--tb-s6) var(--tb-s4);text-align:center;
-  color:var(--tb-ink-faint);font-size:13px;
-}
+.empty-note{padding:var(--tb-s6) var(--tb-s4);text-align:center;color:var(--tb-ink-faint);font-size:13px}
 
 /* ---------- 弹层 ---------- */
 dialog{
   width:min(420px,calc(100vw - 32px));padding:0;
   color:var(--tb-ink);background:var(--tb-surface);
-  border:1px solid var(--tb-line);border-radius:var(--tb-r-l);
+  border:1px solid var(--tb-line-strong);border-radius:var(--tb-r-l);
   box-shadow:var(--tb-shadow-2);
 }
-dialog::backdrop{background:rgba(20,19,17,.4)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
 .sheet{padding:var(--tb-s5)}
 .sheet h2{margin:0 0 var(--tb-s4);font-size:17px;font-weight:600}
 label{display:block;margin-bottom:var(--tb-s3)}
-label span{
+label span,.field-label{
   display:block;margin-bottom:var(--tb-s1);
-  font-family:var(--tb-mono);font-size:10.5px;letter-spacing:.06em;
-  color:var(--tb-ink-faint);text-transform:uppercase;
+  font-family:var(--tb-mono);font-size:10px;letter-spacing:.1em;
+  color:var(--tb-ink-faint);
 }
 label input{
   width:100%;padding:9px 11px;font-size:15px;font-family:inherit;
   color:var(--tb-ink);background:var(--tb-surface-2);
   border:1px solid var(--tb-line);border-radius:var(--tb-r-s);outline:none;
 }
-label input:focus{border-color:var(--tb-accent)}
-.tints{display:flex;gap:var(--tb-s2);margin-bottom:var(--tb-s4)}
-.tints button{
-  width:30px;height:30px;border-radius:var(--tb-r-pill);cursor:pointer;
-  border:2px solid transparent;background:var(--tint);
+label input:focus{border-color:var(--tb-ink)}
+.seg{display:flex;gap:var(--tb-s2);margin-bottom:var(--tb-s3)}
+.seg button{
+  flex:1;padding:8px;font-size:13px;font-family:inherit;cursor:pointer;
+  color:var(--tb-ink-soft);background:var(--tb-surface-2);
+  border:1px solid var(--tb-line);border-radius:var(--tb-r-s);
 }
-.tints button[aria-pressed="true"]{
-  border-color:var(--tb-ink);
+.seg button[aria-pressed="true"]{
+  background:var(--tb-accent);border-color:var(--tb-accent);
+  color:var(--tb-accent-ink);font-weight:600;
 }
 .sheet-actions{display:flex;gap:var(--tb-s2);margin-top:var(--tb-s5)}
 .sheet-actions button{
   flex:1;padding:10px;font-size:14px;font-family:inherit;
-  border-radius:var(--tb-r-s);cursor:pointer;border:1px solid var(--tb-line);
-  background:var(--tb-surface-2);color:var(--tb-ink);
+  border-radius:var(--tb-r-s);cursor:pointer;
+  border:1px solid var(--tb-line-strong);
+  background:var(--tb-surface);color:var(--tb-ink);
 }
 .sheet-actions .primary{
-  background:var(--tb-accent);border-color:var(--tb-accent);color:var(--tb-accent-ink);
-  font-weight:600;
+  background:var(--tb-accent);border-color:var(--tb-accent);
+  color:var(--tb-accent-ink);font-weight:600;
 }
-.sheet-actions .danger{color:var(--tb-danger);border-color:var(--tb-danger-soft)}
 
 /* ---------- 吐司 ---------- */
 #toast{
   position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));
   transform:translate(-50%,8px);
-  padding:8px 14px;font-size:13px;
+  padding:7px 14px;font-size:12.5px;
   background:var(--tb-ink);color:var(--tb-bg);
   border-radius:var(--tb-r-pill);
-  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;
 }
 #toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -230,7 +214,7 @@ label input:focus{border-color:var(--tb-accent)}
     <h1>工具箱</h1>
     <p class="sub" id="count"></p>
   </div>
-  <button class="icon-btn" id="theme-btn" title="主题">◐</button>
+  <button class="icon-btn" id="theme-btn" title="日夜">◐</button>
   <button class="icon-btn" id="edit-btn" title="整理" aria-pressed="false">✎</button>
 </header>
 
@@ -239,7 +223,7 @@ label input:focus{border-color:var(--tb-accent)}
   <input id="q" type="search" placeholder="找工具" autocomplete="off" enterkeyhint="search">
 </div>
 
-<div class="cards" id="grid"></div>
+<main id="main"></main>
 <button class="add-tile" id="add-btn">＋　添加一个</button>
 
 <footer>
@@ -249,7 +233,7 @@ label input:focus{border-color:var(--tb-accent)}
     <button id="reset-btn">恢复默认</button>
     <span id="hidden-note"></span>
   </div>
-  <div>卡片点不开就按右上角 ✎ 改地址。配置只存在这台设备的浏览器里，换设备记得导出一份。</div>
+  <div>整理模式（右上 ✎）里能改地址、置顶、换栏、调顺序。配置只存在这台设备上，换手机记得先导出一份。</div>
 </footer>
 
 <input type="file" id="import-file" accept="application/json,.json" hidden>
@@ -259,14 +243,22 @@ label input:focus{border-color:var(--tb-accent)}
   <form class="sheet" id="sheet-form" method="dialog">
     <h2 id="sheet-title">编辑</h2>
     <label><span>名字</span><input id="f-name" required maxlength="20"></label>
-    <label><span>一句话说明</span><input id="f-desc" maxlength="80"></label>
+    <label><span>一句话说明</span><input id="f-desc" maxlength="40" placeholder="短一点，卡片上只留一两行"></label>
     <label><span>网址</span><input id="f-url" type="url" inputmode="url" placeholder="https://"></label>
     <label><span>图标（一个字或 emoji）</span><input id="f-glyph" maxlength="2"></label>
-    <span style="display:block;margin-bottom:var(--tb-s1);font-family:var(--tb-mono);font-size:10.5px;letter-spacing:.06em;color:var(--tb-ink-faint)">颜色</span>
-    <div class="tints" id="f-tints"></div>
+    <div class="field-label">放哪一栏</div>
+    <div class="seg" id="f-group">
+      <button type="button" data-group="diy">DIY</button>
+      <button type="button" data-group="stash">收纳</button>
+    </div>
+    <div class="field-label">置顶</div>
+    <div class="seg" id="f-pin">
+      <button type="button" data-pin="1">置顶</button>
+      <button type="button" data-pin="0">不置顶</button>
+    </div>
     <div class="sheet-actions">
       <button type="button" id="sheet-cancel">取消</button>
-      <button type="button" class="danger" id="sheet-delete">删除</button>
+      <button type="button" id="sheet-delete">删除</button>
       <button type="submit" class="primary">保存</button>
     </div>
   </form>
@@ -274,44 +266,40 @@ label input:focus{border-color:var(--tb-accent)}
 
 <script>
 /* =====================================================================
-   内置的工具清单。
-   这是「出厂设置」—— 代码里加一条，所有设备下次打开都会多一张卡；
-   用户自己改过的字段存在本地覆盖层里，不会被这里的改动冲掉。
+   内置的工具清单 —— 出厂设置。
+   代码里加一条，所有设备下次打开都会多一张卡；
+   在页面上改过的字段存在本地覆盖层里，不会被这里的改动冲掉。
+
+   group：'diy' 是拿来做东西的，'stash' 是拿来存东西的。
+   desc  ：越短越好，卡片上最多两行，写长了会被截断。
    ===================================================================== */
 const PAGES = 'https://yu7705423-cell.github.io';
 
 const BUILTIN = [
-  {
-    id:'read', name:'喵喵书阁', glyph:'书', tint:'t-violet',
-    desc:'番外和长篇都存这儿，能朗读、能让 AI 总结前文',
-    url:PAGES+'/read/'
-  },
-  {
-    id:'fanwai', name:'番外生成器', glyph:'番', tint:'t-rose',
-    desc:'写下脑洞、选几个梗，产出一段直接能用的 Prompt',
-    url:PAGES+'/fanwai/'
-  },
-  {
-    id:'memory', name:'Chat Archive', glyph:'档', tint:'t-blue',
-    desc:'一份 JSON 备份 = 一段对话，导进来当聊天记录翻',
-    url:PAGES+'/memory/chat-archive.html'
-  },
-  {
-    id:'imgtest', name:'图床工具箱', glyph:'图', tint:'t-green',
-    desc:'自建图床的上传、改名、批量管理',
-    url:PAGES+'/imgtest/imagehosttoolkit.html'
-  },
+  { id:'fanwai',  name:'番外生成器',    glyph:'番', group:'diy',
+    desc:'选几个梗，产出一段 Prompt',   url:PAGES+'/fanwai/' },
+
+  { id:'imgtest', name:'图床工具箱',    glyph:'图', group:'diy',
+    desc:'自建图床的上传和管理',        url:PAGES+'/imgtest/imagehosttoolkit.html' },
+
+  { id:'read',    name:'喵喵书阁',      glyph:'书', group:'stash',
+    desc:'存番外和长篇，能朗读',        url:PAGES+'/read/' },
+
+  { id:'memory',  name:'Chat Archive',  glyph:'档', group:'stash',
+    desc:'JSON 备份当聊天记录翻',       url:PAGES+'/memory/chat-archive.html' },
 ];
 
-const TINTS = ['t-violet','t-rose','t-blue','t-green','t-honey','t-ink'];
+const GROUPS = [
+  { key:'pin',   label:'置顶' },
+  { key:'diy',   label:'DIY' },
+  { key:'stash', label:'收纳' },
+];
 
 /* =====================================================================
-   本地状态。
-   只存「和出厂设置的差异」：改过哪几个字段、藏了谁、自己加了什么、排序。
-   这样以后代码里更新内置卡片的说明文字，用户那边也能跟着更新。
+   本地状态：只存「和出厂设置的差异」。
    ===================================================================== */
 const STORE = 'toolbox.v1';
-const blank = () => ({theme:'auto', order:[], hidden:[], overrides:{}, custom:[]});
+const blank = () => ({theme:'auto', order:[], hidden:[], pinned:[], overrides:{}, custom:[]});
 
 let state = load();
 
@@ -319,6 +307,7 @@ function load(){
   try{
     const raw = localStorage.getItem(STORE);
     if(!raw) return blank();
+    // 老版本存下来的配置没有 pinned 这些字段，用 blank() 兜住
     return Object.assign(blank(), JSON.parse(raw));
   }catch(e){
     // 隐私模式 / 清过站点数据 / 存储被拦：一律当没存过，页面照样能用
@@ -330,10 +319,10 @@ function save(){
   catch(e){ toast('这台设备存不了配置，改动只在本次有效'); }
 }
 
-/* 出厂卡片 + 本地覆盖 + 自定义卡片，按保存的顺序拼成最终列表 */
+/* 出厂卡片 + 本地覆盖 + 自定义卡片，按保存的顺序拼成一张总表 */
 function tools(){
   const merged = BUILTIN.map(t => Object.assign({builtin:true}, t, state.overrides[t.id] || {}))
-    .concat(state.custom.map(t => Object.assign({builtin:false}, t)));
+    .concat(state.custom.map(t => Object.assign({builtin:false, group:'diy'}, t)));
   const rank = id => {
     const i = state.order.indexOf(id);
     return i === -1 ? 1e6 : i;   // 没排过序的排在后面，保持出厂顺序
@@ -341,15 +330,27 @@ function tools(){
   return merged.sort((a,b) => rank(a.id) - rank(b.id));
 }
 function visible(){ return tools().filter(t => !state.hidden.includes(t.id)); }
+function isPinned(id){ return state.pinned.includes(id); }
+
+/* 分栏：置顶 / DIY / 收纳。置顶的卡从原来那栏里拿走，不重复出现 */
+function sections(){
+  const v = visible();
+  return GROUPS.map(g => ({
+    key:g.key, label:g.label,
+    items: g.key === 'pin'
+      ? v.filter(t => isPinned(t.id))
+      : v.filter(t => !isPinned(t.id) && (t.group || 'diy') === g.key)
+  })).filter(s => s.items.length);
+}
 
 /* =====================================================================
    渲染
    ===================================================================== */
-const grid = document.getElementById('grid');
+const main = document.getElementById('main');
 const qInput = document.getElementById('q');
 
-function host(url){
-  if(!url) return '地址待填';
+function pathOf(url){
+  if(!url) return '地址还没填';
   try{
     const u = new URL(url);
     // 自己的东西全在同一个域名下，显示域名没信息量，直接给路径
@@ -360,54 +361,33 @@ function host(url){
 
 function render(){
   const kw = qInput.value.trim().toLowerCase();
-  const list = visible().filter(t =>
-    !kw || (t.name + ' ' + (t.desc||'')).toLowerCase().includes(kw)
-  );
+  main.innerHTML = '';
 
-  grid.innerHTML = '';
-  if(!list.length){
+  // 搜索时不分栏，直接平铺结果 —— 找东西的时候分类只会碍事
+  const groups = kw
+    ? [{key:'hit', label:'', items: visible().filter(t =>
+        (t.name + ' ' + (t.desc||'')).toLowerCase().includes(kw))}]
+    : sections();
+
+  const total = groups.reduce((n,g) => n + g.items.length, 0);
+  if(!total){
     const p = document.createElement('p');
     p.className = 'empty-note';
-    p.textContent = kw ? '没有叫这个名字的' : '一个都没有了，按 ✎ 里的「＋ 添加一个」';
-    grid.appendChild(p);
+    p.textContent = kw ? '没有叫这个名字的' : '一个都没有了，按右上角 ✎ 再「＋ 添加一个」';
+    main.appendChild(p);
   }
 
-  const all = visible();
-  list.forEach(t => {
-    const card = document.createElement('a');
-    card.className = 'card ' + (t.tint || 't-ink') + (t.url ? '' : ' empty-url');
-    card.href = t.url || '#';
-    // 加到主屏幕后是独立窗口，_blank 会甩回 Safari，所以那种情况原地跳
-    if(t.url && !matchMedia('(display-mode:standalone)').matches){
-      card.target = '_blank';
-      card.rel = 'noopener';
+  groups.forEach(g => {
+    if(g.label){
+      const h = document.createElement('div');
+      h.className = 'sec';
+      h.innerHTML = '<b>' + g.label + '</b><i></i>';
+      main.appendChild(h);
     }
-    card.innerHTML = `
-      <div class="glyph">${esc(t.glyph || t.name.slice(0,1))}</div>
-      <div class="name">${esc(t.name)}</div>
-      ${t.desc ? `<div class="desc">${esc(t.desc)}</div>` : ''}
-      <div class="host">${esc(host(t.url))}</div>
-      <div class="card-tools"></div>`;
-
-    const bar = card.querySelector('.card-tools');
-    const i = all.indexOf(all.find(x => x.id === t.id));
-    bar.append(
-      btn('改', () => openSheet(t.id)),
-      btn('藏', () => { state.hidden.push(t.id); save(); render(); toast('藏起来了'); }),
-      btn('↑', () => move(t.id, -1), i === 0),
-      btn('↓', () => move(t.id, 1), i === all.length - 1),
-    );
-
-    // 编辑模式下整张卡不跳转，只有那排小按钮管事
-    card.addEventListener('click', e => {
-      if(document.body.classList.contains('editing') || !t.url) e.preventDefault();
-      if(!t.url && !document.body.classList.contains('editing')){
-        openSheet(t.id);
-        toast('这张卡还没填地址');
-      }
-    });
-
-    grid.appendChild(card);
+    const wrap = document.createElement('div');
+    wrap.className = 'cards';
+    g.items.forEach((t, i) => wrap.appendChild(card(t, i, g.items.length)));
+    main.appendChild(wrap);
   });
 
   const n = visible().length, h = state.hidden.length;
@@ -419,22 +399,76 @@ function render(){
   if(un) un.onclick = () => { state.hidden = []; save(); render(); };
 }
 
-function btn(text, fn, disabled){
+function card(t, i, len){
+  const el = document.createElement('a');
+  el.className = 'card' + (isPinned(t.id) ? ' pin' : '') + (t.url ? '' : ' no-url');
+  el.href = t.url || '#';
+  // 加到主屏幕后是独立窗口，_blank 会把人甩回 Safari，所以那种情况原地跳
+  if(t.url && !matchMedia('(display-mode:standalone)').matches){
+    el.target = '_blank';
+    el.rel = 'noopener';
+  }
+  el.innerHTML = `
+    <div class="head">
+      <div class="glyph">${esc(t.glyph || t.name.slice(0,1))}</div>
+      <div class="name">${esc(t.name)}</div>
+    </div>
+    ${t.desc ? `<div class="desc">${esc(t.desc)}</div>` : ''}
+    <div class="path">${esc(pathOf(t.url))}</div>
+    <div class="card-tools"></div>`;
+
+  const bar = el.querySelector('.card-tools');
+  bar.append(
+    btn('改', () => openSheet(t.id)),
+    btn('顶', () => togglePin(t.id), false, isPinned(t.id)),
+    btn('藏', () => { state.hidden.push(t.id); save(); render(); toast('藏起来了'); }),
+    btn('↑', () => move(t.id, -1), i === 0),
+    btn('↓', () => move(t.id, 1), i === len - 1),
+  );
+
+  el.addEventListener('click', e => {
+    const editing = document.body.classList.contains('editing');
+    if(editing || !t.url) e.preventDefault();
+    if(!editing && !t.url){
+      openSheet(t.id);
+      toast('这张卡还没填地址');
+    }
+  });
+  return el;
+}
+
+function btn(text, fn, disabled, on){
   const b = document.createElement('button');
   b.type = 'button';
   b.textContent = text;
-  if(disabled) b.disabled = true, b.style.opacity = .35;
-  b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); if(!disabled) fn(); });
+  if(on) b.className = 'on';
+  if(disabled){ b.disabled = true; b.style.opacity = .3; }
+  b.addEventListener('click', e => {
+    e.preventDefault(); e.stopPropagation();
+    if(!disabled) fn();
+  });
   return b;
 }
 
+function togglePin(id){
+  const i = state.pinned.indexOf(id);
+  if(i === -1) state.pinned.push(id); else state.pinned.splice(i, 1);
+  save(); render();
+  toast(i === -1 ? '置顶了' : '取消置顶');
+}
+
+/* ↑↓ 只在本栏里挪，不会跨栏乱跑 */
 function move(id, delta){
-  const ids = visible().map(t => t.id);
-  const from = ids.indexOf(id), to = from + delta;
-  if(to < 0 || to >= ids.length) return;
-  ids.splice(to, 0, ids.splice(from, 1)[0]);
-  // 藏起来的卡也要留在顺序表里，不然放出来时会跑到最后
-  state.order = ids.concat(state.hidden.filter(x => !ids.includes(x)));
+  const sec = sections().find(s => s.items.some(t => t.id === id));
+  if(!sec) return;
+  const ids = sec.items.map(t => t.id);
+  const i = ids.indexOf(id), j = i + delta;
+  if(j < 0 || j >= ids.length) return;
+  // 先把完整顺序写实（含藏起来的），再把这两张卡的位置对调
+  const full = tools().map(t => t.id);
+  const a = full.indexOf(id), b = full.indexOf(ids[j]);
+  [full[a], full[b]] = [full[b], full[a]];
+  state.order = full;
   save(); render();
 }
 
@@ -451,34 +485,38 @@ const fName = document.getElementById('f-name');
 const fDesc = document.getElementById('f-desc');
 const fUrl = document.getElementById('f-url');
 const fGlyph = document.getElementById('f-glyph');
-const tintBox = document.getElementById('f-tints');
-let editingId = null, pickedTint = TINTS[0];
+const groupBox = document.getElementById('f-group');
+const pinBox = document.getElementById('f-pin');
+let editingId = null, pickedGroup = 'diy', pickedPin = false;
 
-TINTS.forEach(t => {
-  const b = document.createElement('button');
-  b.type = 'button'; b.className = t; b.dataset.tint = t;
-  b.setAttribute('aria-label', t);
-  b.addEventListener('click', () => { pickedTint = t; paintTints(); });
-  tintBox.appendChild(b);
+groupBox.addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  pickedGroup = b.dataset.group; paintSeg();
 });
-function paintTints(){
-  [...tintBox.children].forEach(b =>
-    b.setAttribute('aria-pressed', String(b.dataset.tint === pickedTint)));
+pinBox.addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  pickedPin = b.dataset.pin === '1'; paintSeg();
+});
+function paintSeg(){
+  [...groupBox.children].forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.group === pickedGroup)));
+  [...pinBox.children].forEach(b =>
+    b.setAttribute('aria-pressed', String((b.dataset.pin === '1') === pickedPin)));
 }
 
 function openSheet(id){
   editingId = id;
   const t = id ? tools().find(x => x.id === id) : null;
-  document.getElementById('sheet-title').textContent = t ? '编辑' + t.name : '添加一个';
+  document.getElementById('sheet-title').textContent = t ? '编辑 ' + t.name : '添加一个';
   fName.value = t ? t.name : '';
   fDesc.value = t ? (t.desc || '') : '';
   fUrl.value = t ? (t.url || '') : '';
   fGlyph.value = t ? (t.glyph || '') : '';
-  pickedTint = t ? (t.tint || TINTS[0]) : TINTS[Math.floor(Math.random()*TINTS.length)];
-  paintTints();
-  // 出厂卡片不能删，只能藏 —— 删了代码里还在，下次打开又回来了，反而更困惑
-  const del = document.getElementById('sheet-delete');
-  del.style.display = (t && !t.builtin) ? '' : 'none';
+  pickedGroup = t ? (t.group || 'diy') : 'diy';
+  pickedPin = t ? isPinned(t.id) : false;
+  paintSeg();
+  // 出厂卡片不能删，只能藏 —— 删了代码里还在，下次打开又回来，反而更困惑
+  document.getElementById('sheet-delete').style.display = (t && !t.builtin) ? '' : 'none';
   sheet.showModal();
 }
 
@@ -489,26 +527,31 @@ document.getElementById('sheet-form').addEventListener('submit', e => {
     desc: fDesc.value.trim(),
     url: fUrl.value.trim(),
     glyph: fGlyph.value.trim(),
-    tint: pickedTint,
+    group: pickedGroup,
   };
-  if(editingId){
-    const t = tools().find(x => x.id === editingId);
+  let id = editingId;
+  if(id){
+    const t = tools().find(x => x.id === id);
     if(t.builtin){
-      state.overrides[editingId] = Object.assign({}, state.overrides[editingId], patch);
+      state.overrides[id] = Object.assign({}, state.overrides[id], patch);
     }else{
-      const c = state.custom.find(x => x.id === editingId);
-      Object.assign(c, patch);
+      Object.assign(state.custom.find(x => x.id === id), patch);
     }
   }else{
-    state.custom.push(Object.assign({id:'c' + Date.now().toString(36)}, patch));
+    id = 'c' + Date.now().toString(36);
+    state.custom.push(Object.assign({id}, patch));
   }
-  save(); sheet.close(); render();
-  toast('存好了');
+  const pinnedNow = isPinned(id);
+  if(pickedPin && !pinnedNow) state.pinned.push(id);
+  if(!pickedPin && pinnedNow) state.pinned.splice(state.pinned.indexOf(id), 1);
+
+  save(); sheet.close(); render(); toast('存好了');
 });
 document.getElementById('sheet-cancel').onclick = () => sheet.close();
 document.getElementById('sheet-delete').onclick = () => {
   state.custom = state.custom.filter(x => x.id !== editingId);
   state.order = state.order.filter(x => x !== editingId);
+  state.pinned = state.pinned.filter(x => x !== editingId);
   save(); sheet.close(); render(); toast('删掉了');
 };
 
@@ -532,12 +575,16 @@ function applyTheme(){
   else document.documentElement.setAttribute('data-theme', t);
   themeBtn.textContent = THEME_LABEL[t];
   const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme:dark)').matches);
-  document.querySelector('meta[name=theme-color]').content = dark ? '#16151A' : '#F7F6F3';
+  document.querySelector('meta[name=theme-color]').content = dark ? '#000000' : '#FFFFFF';
 }
 themeBtn.onclick = () => {
   state.theme = THEMES[(THEMES.indexOf(state.theme) + 1) % 3];
   save(); applyTheme();
 };
+// 跟随系统的时候，系统半夜自己切了也要跟上
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => {
+  if(state.theme === 'auto') applyTheme();
+});
 
 document.getElementById('export-btn').onclick = () => {
   const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
@@ -561,7 +608,7 @@ importFile.onchange = async () => {
 };
 
 document.getElementById('reset-btn').onclick = () => {
-  if(!confirm('恢复默认？自己加的卡片和改过的地址都会没有。')) return;
+  if(!confirm('恢复默认？自己加的卡片、改过的地址和置顶都会没有。')) return;
   state = blank(); save(); applyTheme(); render(); toast('回到出厂了');
 };
 
