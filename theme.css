@@ -1,0 +1,128 @@
+/*
+  工具箱的底色 —— 所有工具共用的一套值。
+  这里是唯一的真相来源：改颜色只改这个文件，别的地方都引它。
+
+  命名前缀统一是 --tb-（toolbox）。各个工具内部原来叫什么就还叫什么
+  （--ink / --text / --fg 都行，不用改名），只要在它自己的 :root 里
+  把值指过来即可，例如：
+
+      :root{
+        --bg:      var(--tb-bg);
+        --surface: var(--tb-surface);
+        --ink:     var(--tb-ink);
+        --line:    var(--tb-line);
+        --accent:  var(--tb-accent);
+      }
+
+  这样一个工具接入只要加十几行，CSS 规则一条都不用动。
+*/
+
+:root{
+  /* ---- 底 ---- */
+  --tb-bg:#F7F6F3;          /* 页面底色，暖白纸 */
+  --tb-surface:#FFFFFF;     /* 卡片 / 面板 */
+  --tb-surface-2:#FBFAF8;   /* 次级面板、输入框底 */
+  --tb-sunk:#F1EFEA;        /* 凹下去的槽 */
+
+  /* ---- 字 ---- */
+  --tb-ink:#2B2A28;         /* 正文 */
+  --tb-ink-soft:#726E68;    /* 次要说明 */
+  --tb-ink-faint:#A9A49C;   /* 占位、时间戳 */
+
+  /* ---- 线 ---- */
+  --tb-line:#E6E2DA;
+  --tb-line-strong:#D6D1C7;
+
+  /* ---- 强调色：藕紫 ---- */
+  --tb-accent:#6E5A8C;
+  --tb-accent-ink:#FFFFFF;  /* 压在强调色上的字 */
+  --tb-accent-soft:#EFE9F5; /* 强调色的淡底 */
+
+  /* ---- 状态 ---- */
+  --tb-danger:#B5533C;
+  --tb-danger-soft:#F6E7E2;
+  --tb-ok:#5A6B5A;
+  --tb-ok-soft:#ECF1EF;
+
+  /* ---- 圆角 ---- */
+  --tb-r-s:6px;
+  --tb-r-m:10px;
+  --tb-r-l:16px;
+  --tb-r-pill:999px;
+
+  /* ---- 间距（4 的倍数，别再各自发明） ---- */
+  --tb-s1:4px;
+  --tb-s2:8px;
+  --tb-s3:12px;
+  --tb-s4:16px;
+  --tb-s5:24px;
+  --tb-s6:32px;
+
+  /* ---- 字体 ---- */
+  --tb-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
+            "PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --tb-mono:"DM Mono","SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  /* ---- 阴影：只有两档，别再写第三种 ---- */
+  --tb-shadow-1:0 1px 2px rgba(43,42,40,.04),0 1px 8px rgba(43,42,40,.03);
+  --tb-shadow-2:0 4px 12px rgba(43,42,40,.08),0 1px 3px rgba(43,42,40,.05);
+}
+
+/*
+  暗色。两个入口都认：
+  跟系统（prefers-color-scheme），以及手动切到 data-theme="dark"。
+  手动切到 light 时要能压住系统的暗色，所以下面那条 :not() 是必须的。
+*/
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --tb-bg:#16151A;
+    --tb-surface:#1E1D23;
+    --tb-surface-2:#26242B;
+    --tb-sunk:#121116;
+
+    --tb-ink:#EDEAE4;
+    --tb-ink-soft:#A39E97;
+    --tb-ink-faint:#6E6A64;
+
+    --tb-line:#2E2C33;
+    --tb-line-strong:#3D3A42;
+
+    --tb-accent:#B49BD4;
+    --tb-accent-ink:#1A1820;
+    --tb-accent-soft:#2A2433;
+
+    --tb-danger:#D08A76;
+    --tb-danger-soft:#33241F;
+    --tb-ok:#8FA68F;
+    --tb-ok-soft:#1F2620;
+
+    --tb-shadow-1:0 1px 2px rgba(0,0,0,.3);
+    --tb-shadow-2:0 4px 14px rgba(0,0,0,.4);
+  }
+}
+
+:root[data-theme="dark"]{
+  --tb-bg:#16151A;
+  --tb-surface:#1E1D23;
+  --tb-surface-2:#26242B;
+  --tb-sunk:#121116;
+
+  --tb-ink:#EDEAE4;
+  --tb-ink-soft:#A39E97;
+  --tb-ink-faint:#6E6A64;
+
+  --tb-line:#2E2C33;
+  --tb-line-strong:#3D3A42;
+
+  --tb-accent:#B49BD4;
+  --tb-accent-ink:#1A1820;
+  --tb-accent-soft:#2A2433;
+
+  --tb-danger:#D08A76;
+  --tb-danger-soft:#33241F;
+  --tb-ok:#8FA68F;
+  --tb-ok-soft:#1F2620;
+
+  --tb-shadow-1:0 1px 2px rgba(0,0,0,.3);
+  --tb-shadow-2:0 4px 14px rgba(0,0,0,.4);
+}

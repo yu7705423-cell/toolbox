@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="工具箱">
+<meta name="theme-color" content="#F7F6F3">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="theme.css">
+<title>工具箱</title>
+<style>
+/*
+  合集页自己的排版。颜色一律从 theme.css 的 --tb-* 里取，
+  这里不新发明任何色值 —— 要换皮就去改那个文件。
+*/
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--tb-bg);
+  color:var(--tb-ink);
+  font-family:var(--tb-font);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding:0 var(--tb-s4) calc(var(--tb-s6) + env(safe-area-inset-bottom));
+  max-width:720px;
+  margin:0 auto;
+}
+
+/* ---------- 顶部 ---------- */
+header{
+  padding:calc(var(--tb-s6) + env(safe-area-inset-top)) 0 var(--tb-s4);
+  display:flex;align-items:flex-end;gap:var(--tb-s3);
+}
+.title{flex:1;min-width:0}
+h1{
+  margin:0;font-size:26px;line-height:1.2;font-weight:600;
+  letter-spacing:.02em;
+}
+.sub{
+  margin:var(--tb-s1) 0 0;font-family:var(--tb-mono);
+  font-size:11px;color:var(--tb-ink-faint);letter-spacing:.06em;
+}
+.icon-btn{
+  flex:none;width:36px;height:36px;border:1px solid var(--tb-line);
+  border-radius:var(--tb-r-pill);background:var(--tb-surface);
+  color:var(--tb-ink-soft);font-size:15px;line-height:1;
+  display:grid;place-items:center;cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.icon-btn:active{background:var(--tb-sunk)}
+.icon-btn[aria-pressed="true"]{
+  background:var(--tb-accent);border-color:var(--tb-accent);color:var(--tb-accent-ink);
+}
+
+/* ---------- 搜索 ---------- */
+.search{
+  position:relative;margin-bottom:var(--tb-s4);
+}
+.search input{
+  width:100%;padding:10px 12px 10px 34px;font-size:15px;
+  font-family:inherit;color:var(--tb-ink);
+  background:var(--tb-surface);border:1px solid var(--tb-line);
+  border-radius:var(--tb-r-m);outline:none;
+  transition:border-color .15s;
+}
+.search input:focus{border-color:var(--tb-line-strong)}
+.search input::placeholder{color:var(--tb-ink-faint)}
+.search svg{
+  position:absolute;left:11px;top:50%;transform:translateY(-50%);
+  width:15px;height:15px;stroke:var(--tb-ink-faint);fill:none;stroke-width:1.8;
+}
+
+/* ---------- 卡片网格 ---------- */
+.cards{
+  display:grid;gap:var(--tb-s3);
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+}
+.card{
+  position:relative;display:flex;flex-direction:column;gap:var(--tb-s2);
+  padding:var(--tb-s4);text-decoration:none;color:inherit;
+  background:var(--tb-surface);border:1px solid var(--tb-line);
+  border-radius:var(--tb-r-l);box-shadow:var(--tb-shadow-1);
+  transition:transform .12s,box-shadow .15s,border-color .15s;
+}
+.card:active{transform:scale(.985);box-shadow:var(--tb-shadow-2)}
+.glyph{
+  width:38px;height:38px;border-radius:var(--tb-r-m);
+  display:grid;place-items:center;
+  font-size:18px;font-weight:600;letter-spacing:0;
+  color:var(--tint);
+  background:color-mix(in srgb,var(--tint) 13%,transparent);
+}
+.card .name{font-size:15px;font-weight:600;letter-spacing:.01em}
+.card .desc{
+  font-size:12.5px;color:var(--tb-ink-soft);line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card .host{
+  font-family:var(--tb-mono);font-size:10px;color:var(--tb-ink-faint);
+  letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.card.empty-url{border-style:dashed}
+.card.empty-url .host{color:var(--tb-danger)}
+
+/* 色板：亮色一套，暗色一套（暗底下原色太闷，整体提亮） */
+.t-violet{--tint:#6E5A8C}
+.t-rose  {--tint:#B5533C}
+.t-green {--tint:#5A6B5A}
+.t-blue  {--tint:#5A6B8C}
+.t-honey {--tint:#8C7A4A}
+.t-ink   {--tint:#2B2A28}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .t-violet{--tint:#B49BD4}
+  :root:not([data-theme="light"]) .t-rose  {--tint:#D08A76}
+  :root:not([data-theme="light"]) .t-green {--tint:#8FA68F}
+  :root:not([data-theme="light"]) .t-blue  {--tint:#8FA0C4}
+  :root:not([data-theme="light"]) .t-honey {--tint:#C4B182}
+  :root:not([data-theme="light"]) .t-ink   {--tint:#C9C5BE}
+}
+:root[data-theme="dark"] .t-violet{--tint:#B49BD4}
+:root[data-theme="dark"] .t-rose  {--tint:#D08A76}
+:root[data-theme="dark"] .t-green {--tint:#8FA68F}
+:root[data-theme="dark"] .t-blue  {--tint:#8FA0C4}
+:root[data-theme="dark"] .t-honey {--tint:#C4B182}
+:root[data-theme="dark"] .t-ink   {--tint:#C9C5BE}
+
+/* ---------- 编辑模式 ---------- */
+.card-tools{
+  display:none;gap:var(--tb-s1);margin-top:var(--tb-s1);
+  padding-top:var(--tb-s2);border-top:1px solid var(--tb-line);
+}
+body.editing .card-tools{display:flex}
+body.editing .card{cursor:default}
+.card-tools button{
+  flex:1;padding:5px 0;font-size:11px;font-family:var(--tb-mono);
+  color:var(--tb-ink-soft);background:var(--tb-surface-2);
+  border:1px solid var(--tb-line);border-radius:var(--tb-r-s);cursor:pointer;
+}
+.card-tools button:active{background:var(--tb-sunk)}
+.add-tile{
+  display:none;align-items:center;justify-content:center;gap:var(--tb-s2);
+  min-height:96px;padding:var(--tb-s4);
+  border:1px dashed var(--tb-line-strong);border-radius:var(--tb-r-l);
+  background:transparent;color:var(--tb-ink-soft);
+  font-family:var(--tb-font);font-size:13px;cursor:pointer;
+}
+body.editing .add-tile{display:flex}
+
+/* ---------- 底部 ---------- */
+footer{
+  margin-top:var(--tb-s6);padding-top:var(--tb-s4);
+  border-top:1px solid var(--tb-line);
+  font-family:var(--tb-mono);font-size:11px;color:var(--tb-ink-faint);
+  letter-spacing:.04em;
+}
+footer .row{display:flex;flex-wrap:wrap;gap:var(--tb-s3);margin-bottom:var(--tb-s3)}
+footer button{
+  padding:0;font:inherit;color:var(--tb-ink-soft);
+  background:none;border:none;border-bottom:1px solid var(--tb-line-strong);
+  cursor:pointer;
+}
+footer button:active{color:var(--tb-ink)}
+.empty-note{
+  padding:var(--tb-s6) var(--tb-s4);text-align:center;
+  color:var(--tb-ink-faint);font-size:13px;
+}
+
+/* ---------- 弹层 ---------- */
+dialog{
+  width:min(420px,calc(100vw - 32px));padding:0;
+  color:var(--tb-ink);background:var(--tb-surface);
+  border:1px solid var(--tb-line);border-radius:var(--tb-r-l);
+  box-shadow:var(--tb-shadow-2);
+}
+dialog::backdrop{background:rgba(20,19,17,.4)}
+.sheet{padding:var(--tb-s5)}
+.sheet h2{margin:0 0 var(--tb-s4);font-size:17px;font-weight:600}
+label{display:block;margin-bottom:var(--tb-s3)}
+label span{
+  display:block;margin-bottom:var(--tb-s1);
+  font-family:var(--tb-mono);font-size:10.5px;letter-spacing:.06em;
+  color:var(--tb-ink-faint);text-transform:uppercase;
+}
+label input{
+  width:100%;padding:9px 11px;font-size:15px;font-family:inherit;
+  color:var(--tb-ink);background:var(--tb-surface-2);
+  border:1px solid var(--tb-line);border-radius:var(--tb-r-s);outline:none;
+}
+label input:focus{border-color:var(--tb-accent)}
+.tints{display:flex;gap:var(--tb-s2);margin-bottom:var(--tb-s4)}
+.tints button{
+  width:30px;height:30px;border-radius:var(--tb-r-pill);cursor:pointer;
+  border:2px solid transparent;background:var(--tint);
+}
+.tints button[aria-pressed="true"]{
+  border-color:var(--tb-ink);
+}
+.sheet-actions{display:flex;gap:var(--tb-s2);margin-top:var(--tb-s5)}
+.sheet-actions button{
+  flex:1;padding:10px;font-size:14px;font-family:inherit;
+  border-radius:var(--tb-r-s);cursor:pointer;border:1px solid var(--tb-line);
+  background:var(--tb-surface-2);color:var(--tb-ink);
+}
+.sheet-actions .primary{
+  background:var(--tb-accent);border-color:var(--tb-accent);color:var(--tb-accent-ink);
+  font-weight:600;
+}
+.sheet-actions .danger{color:var(--tb-danger);border-color:var(--tb-danger-soft)}
+
+/* ---------- 吐司 ---------- */
+#toast{
+  position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));
+  transform:translate(-50%,8px);
+  padding:8px 14px;font-size:13px;
+  background:var(--tb-ink);color:var(--tb-bg);
+  border-radius:var(--tb-r-pill);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title">
+    <h1>工具箱</h1>
+    <p class="sub" id="count"></p>
+  </div>
+  <button class="icon-btn" id="theme-btn" title="主题">◐</button>
+  <button class="icon-btn" id="edit-btn" title="整理" aria-pressed="false">✎</button>
+</header>
+
+<div class="search">
+  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+  <input id="q" type="search" placeholder="找工具" autocomplete="off" enterkeyhint="search">
+</div>
+
+<div class="cards" id="grid"></div>
+<button class="add-tile" id="add-btn">＋　添加一个</button>
+
+<footer>
+  <div class="row">
+    <button id="export-btn">导出配置</button>
+    <button id="import-btn">导入配置</button>
+    <button id="reset-btn">恢复默认</button>
+    <span id="hidden-note"></span>
+  </div>
+  <div>卡片点不开就按右上角 ✎ 改地址。配置只存在这台设备的浏览器里，换设备记得导出一份。</div>
+</footer>
+
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+<div id="toast"></div>
+
+<dialog id="sheet">
+  <form class="sheet" id="sheet-form" method="dialog">
+    <h2 id="sheet-title">编辑</h2>
+    <label><span>名字</span><input id="f-name" required maxlength="20"></label>
+    <label><span>一句话说明</span><input id="f-desc" maxlength="80"></label>
+    <label><span>网址</span><input id="f-url" type="url" inputmode="url" placeholder="https://"></label>
+    <label><span>图标（一个字或 emoji）</span><input id="f-glyph" maxlength="2"></label>
+    <span style="display:block;margin-bottom:var(--tb-s1);font-family:var(--tb-mono);font-size:10.5px;letter-spacing:.06em;color:var(--tb-ink-faint)">颜色</span>
+    <div class="tints" id="f-tints"></div>
+    <div class="sheet-actions">
+      <button type="button" id="sheet-cancel">取消</button>
+      <button type="button" class="danger" id="sheet-delete">删除</button>
+      <button type="submit" class="primary">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* =====================================================================
+   内置的工具清单。
+   这是「出厂设置」—— 代码里加一条，所有设备下次打开都会多一张卡；
+   用户自己改过的字段存在本地覆盖层里，不会被这里的改动冲掉。
+   ===================================================================== */
+const PAGES = 'https://yu7705423-cell.github.io';
+
+const BUILTIN = [
+  {
+    id:'read', name:'喵喵书阁', glyph:'书', tint:'t-violet',
+    desc:'番外和长篇都存这儿，能朗读、能让 AI 总结前文',
+    url:PAGES+'/read/'
+  },
+  {
+    id:'fanwai', name:'番外生成器', glyph:'番', tint:'t-rose',
+    desc:'写下脑洞、选几个梗，产出一段直接能用的 Prompt',
+    url:PAGES+'/fanwai/'
+  },
+  {
+    id:'memory', name:'Chat Archive', glyph:'档', tint:'t-blue',
+    desc:'一份 JSON 备份 = 一段对话，导进来当聊天记录翻',
+    url:PAGES+'/memory/chat-archive.html'
+  },
+  {
+    id:'imgtest', name:'图床工具箱', glyph:'图', tint:'t-green',
+    desc:'自建图床的上传、改名、批量管理',
+    url:PAGES+'/imgtest/imagehosttoolkit.html'
+  },
+];
+
+const TINTS = ['t-violet','t-rose','t-blue','t-green','t-honey','t-ink'];
+
+/* =====================================================================
+   本地状态。
+   只存「和出厂设置的差异」：改过哪几个字段、藏了谁、自己加了什么、排序。
+   这样以后代码里更新内置卡片的说明文字，用户那边也能跟着更新。
+   ===================================================================== */
+const STORE = 'toolbox.v1';
+const blank = () => ({theme:'auto', order:[], hidden:[], overrides:{}, custom:[]});
+
+let state = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE);
+    if(!raw) return blank();
+    return Object.assign(blank(), JSON.parse(raw));
+  }catch(e){
+    // 隐私模式 / 清过站点数据 / 存储被拦：一律当没存过，页面照样能用
+    return blank();
+  }
+}
+function save(){
+  try{ localStorage.setItem(STORE, JSON.stringify(state)); }
+  catch(e){ toast('这台设备存不了配置，改动只在本次有效'); }
+}
+
+/* 出厂卡片 + 本地覆盖 + 自定义卡片，按保存的顺序拼成最终列表 */
+function tools(){
+  const merged = BUILTIN.map(t => Object.assign({builtin:true}, t, state.overrides[t.id] || {}))
+    .concat(state.custom.map(t => Object.assign({builtin:false}, t)));
+  const rank = id => {
+    const i = state.order.indexOf(id);
+    return i === -1 ? 1e6 : i;   // 没排过序的排在后面，保持出厂顺序
+  };
+  return merged.sort((a,b) => rank(a.id) - rank(b.id));
+}
+function visible(){ return tools().filter(t => !state.hidden.includes(t.id)); }
+
+/* =====================================================================
+   渲染
+   ===================================================================== */
+const grid = document.getElementById('grid');
+const qInput = document.getElementById('q');
+
+function host(url){
+  if(!url) return '地址待填';
+  try{
+    const u = new URL(url);
+    // 自己的东西全在同一个域名下，显示域名没信息量，直接给路径
+    if(u.hostname === new URL(PAGES).hostname) return u.pathname;
+    return (u.hostname + u.pathname).replace(/\/$/,'');
+  }catch(e){ return url; }
+}
+
+function render(){
+  const kw = qInput.value.trim().toLowerCase();
+  const list = visible().filter(t =>
+    !kw || (t.name + ' ' + (t.desc||'')).toLowerCase().includes(kw)
+  );
+
+  grid.innerHTML = '';
+  if(!list.length){
+    const p = document.createElement('p');
+    p.className = 'empty-note';
+    p.textContent = kw ? '没有叫这个名字的' : '一个都没有了，按 ✎ 里的「＋ 添加一个」';
+    grid.appendChild(p);
+  }
+
+  const all = visible();
+  list.forEach(t => {
+    const card = document.createElement('a');
+    card.className = 'card ' + (t.tint || 't-ink') + (t.url ? '' : ' empty-url');
+    card.href = t.url || '#';
+    // 加到主屏幕后是独立窗口，_blank 会甩回 Safari，所以那种情况原地跳
+    if(t.url && !matchMedia('(display-mode:standalone)').matches){
+      card.target = '_blank';
+      card.rel = 'noopener';
+    }
+    card.innerHTML = `
+      <div class="glyph">${esc(t.glyph || t.name.slice(0,1))}</div>
+      <div class="name">${esc(t.name)}</div>
+      ${t.desc ? `<div class="desc">${esc(t.desc)}</div>` : ''}
+      <div class="host">${esc(host(t.url))}</div>
+      <div class="card-tools"></div>`;
+
+    const bar = card.querySelector('.card-tools');
+    const i = all.indexOf(all.find(x => x.id === t.id));
+    bar.append(
+      btn('改', () => openSheet(t.id)),
+      btn('藏', () => { state.hidden.push(t.id); save(); render(); toast('藏起来了'); }),
+      btn('↑', () => move(t.id, -1), i === 0),
+      btn('↓', () => move(t.id, 1), i === all.length - 1),
+    );
+
+    // 编辑模式下整张卡不跳转，只有那排小按钮管事
+    card.addEventListener('click', e => {
+      if(document.body.classList.contains('editing') || !t.url) e.preventDefault();
+      if(!t.url && !document.body.classList.contains('editing')){
+        openSheet(t.id);
+        toast('这张卡还没填地址');
+      }
+    });
+
+    grid.appendChild(card);
+  });
+
+  const n = visible().length, h = state.hidden.length;
+  document.getElementById('count').textContent =
+    `${n} 个工具` + (h ? ` · 藏了 ${h} 个` : '');
+  document.getElementById('hidden-note').innerHTML = h
+    ? `<button id="unhide-btn">放出藏起来的 ${h} 个</button>` : '';
+  const un = document.getElementById('unhide-btn');
+  if(un) un.onclick = () => { state.hidden = []; save(); render(); };
+}
+
+function btn(text, fn, disabled){
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = text;
+  if(disabled) b.disabled = true, b.style.opacity = .35;
+  b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); if(!disabled) fn(); });
+  return b;
+}
+
+function move(id, delta){
+  const ids = visible().map(t => t.id);
+  const from = ids.indexOf(id), to = from + delta;
+  if(to < 0 || to >= ids.length) return;
+  ids.splice(to, 0, ids.splice(from, 1)[0]);
+  // 藏起来的卡也要留在顺序表里，不然放出来时会跑到最后
+  state.order = ids.concat(state.hidden.filter(x => !ids.includes(x)));
+  save(); render();
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* =====================================================================
+   编辑 / 添加弹层
+   ===================================================================== */
+const sheet = document.getElementById('sheet');
+const fName = document.getElementById('f-name');
+const fDesc = document.getElementById('f-desc');
+const fUrl = document.getElementById('f-url');
+const fGlyph = document.getElementById('f-glyph');
+const tintBox = document.getElementById('f-tints');
+let editingId = null, pickedTint = TINTS[0];
+
+TINTS.forEach(t => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = t; b.dataset.tint = t;
+  b.setAttribute('aria-label', t);
+  b.addEventListener('click', () => { pickedTint = t; paintTints(); });
+  tintBox.appendChild(b);
+});
+function paintTints(){
+  [...tintBox.children].forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.tint === pickedTint)));
+}
+
+function openSheet(id){
+  editingId = id;
+  const t = id ? tools().find(x => x.id === id) : null;
+  document.getElementById('sheet-title').textContent = t ? '编辑' + t.name : '添加一个';
+  fName.value = t ? t.name : '';
+  fDesc.value = t ? (t.desc || '') : '';
+  fUrl.value = t ? (t.url || '') : '';
+  fGlyph.value = t ? (t.glyph || '') : '';
+  pickedTint = t ? (t.tint || TINTS[0]) : TINTS[Math.floor(Math.random()*TINTS.length)];
+  paintTints();
+  // 出厂卡片不能删，只能藏 —— 删了代码里还在，下次打开又回来了，反而更困惑
+  const del = document.getElementById('sheet-delete');
+  del.style.display = (t && !t.builtin) ? '' : 'none';
+  sheet.showModal();
+}
+
+document.getElementById('sheet-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const patch = {
+    name: fName.value.trim() || '未命名',
+    desc: fDesc.value.trim(),
+    url: fUrl.value.trim(),
+    glyph: fGlyph.value.trim(),
+    tint: pickedTint,
+  };
+  if(editingId){
+    const t = tools().find(x => x.id === editingId);
+    if(t.builtin){
+      state.overrides[editingId] = Object.assign({}, state.overrides[editingId], patch);
+    }else{
+      const c = state.custom.find(x => x.id === editingId);
+      Object.assign(c, patch);
+    }
+  }else{
+    state.custom.push(Object.assign({id:'c' + Date.now().toString(36)}, patch));
+  }
+  save(); sheet.close(); render();
+  toast('存好了');
+});
+document.getElementById('sheet-cancel').onclick = () => sheet.close();
+document.getElementById('sheet-delete').onclick = () => {
+  state.custom = state.custom.filter(x => x.id !== editingId);
+  state.order = state.order.filter(x => x !== editingId);
+  save(); sheet.close(); render(); toast('删掉了');
+};
+
+/* =====================================================================
+   顶部按钮 / 导入导出
+   ===================================================================== */
+document.getElementById('add-btn').onclick = () => openSheet(null);
+
+const editBtn = document.getElementById('edit-btn');
+editBtn.onclick = () => {
+  const on = document.body.classList.toggle('editing');
+  editBtn.setAttribute('aria-pressed', String(on));
+};
+
+const themeBtn = document.getElementById('theme-btn');
+const THEMES = ['auto','light','dark'];
+const THEME_LABEL = {auto:'◐', light:'☀', dark:'☾'};
+function applyTheme(){
+  const t = state.theme;
+  if(t === 'auto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', t);
+  themeBtn.textContent = THEME_LABEL[t];
+  const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme:dark)').matches);
+  document.querySelector('meta[name=theme-color]').content = dark ? '#16151A' : '#F7F6F3';
+}
+themeBtn.onclick = () => {
+  state.theme = THEMES[(THEMES.indexOf(state.theme) + 1) % 3];
+  save(); applyTheme();
+};
+
+document.getElementById('export-btn').onclick = () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'toolbox-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+
+const importFile = document.getElementById('import-file');
+document.getElementById('import-btn').onclick = () => importFile.click();
+importFile.onchange = async () => {
+  const f = importFile.files[0];
+  if(!f) return;
+  try{
+    state = Object.assign(blank(), JSON.parse(await f.text()));
+    save(); applyTheme(); render(); toast('导进来了');
+  }catch(e){ toast('这个文件读不了'); }
+  importFile.value = '';
+};
+
+document.getElementById('reset-btn').onclick = () => {
+  if(!confirm('恢复默认？自己加的卡片和改过的地址都会没有。')) return;
+  state = blank(); save(); applyTheme(); render(); toast('回到出厂了');
+};
+
+qInput.addEventListener('input', render);
+
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('on'), 1800);
+}
+
+applyTheme();
+render();
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
