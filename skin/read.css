@@ -1,0 +1,34 @@
+/*
+  喵喵书阁的换肤表。
+  --mm-* 那一组是排版用的（页宽、字号、边距），不是颜色，原样留着。
+  书阁自己还有一个「自定义 CSS」入口，那是用户写的，加载顺序在这之后，
+  所以想单独给书阁换个颜色照样可以，不会被这份表压住。
+*/
+/*
+  选择器为什么写成 :root:root:root —— 不是手滑。
+
+  这些工具自己的暗色块长这样：
+
+      @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#131211 } }
+
+  那个 :not() 让它的权重是 (0,0,2,0)，比普通的 :root (0,0,1,0) 高，
+  所以单写 :root 压不住它，夜里就会露出它自己的老颜色。
+  重复三次把权重抬到 (0,0,3,0)，才稳稳盖过去。
+
+  想给某个工具单独换颜色，写得比这更具体就行（比如加一层 html）。
+*/
+:root:root:root{
+  --bg:var(--tb-bg);
+  --surface:var(--tb-surface);
+  --surface-2:var(--tb-surface-2);
+  --ink:var(--tb-ink);
+  --ink-soft:var(--tb-ink-soft);
+  --ink-faint:var(--tb-ink-faint);
+  --border:var(--tb-line);
+  --accent:var(--tb-accent);
+  --accent-ink:var(--tb-accent-ink);
+  --accent-soft:var(--tb-accent-soft);
+  --danger:var(--tb-danger);
+  --danger-soft:var(--tb-danger-soft);
+  --shadow:var(--tb-shadow-1);
+}

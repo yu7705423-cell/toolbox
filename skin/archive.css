@@ -1,0 +1,37 @@
+/* Chat Archive 的换肤表。--script（手写体）和 --img-max 不是颜色，留着。 */
+/*
+  选择器为什么写成 :root:root:root —— 不是手滑。
+
+  这些工具自己的暗色块长这样：
+
+      @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#131211 } }
+
+  那个 :not() 让它的权重是 (0,0,2,0)，比普通的 :root (0,0,1,0) 高，
+  所以单写 :root 压不住它，夜里就会露出它自己的老颜色。
+  重复三次把权重抬到 (0,0,3,0)，才稳稳盖过去。
+
+  想给某个工具单独换颜色，写得比这更具体就行（比如加一层 html）。
+*/
+:root:root:root{
+  --bg:var(--tb-bg);
+  --panel:var(--tb-surface);
+  --panel-2:var(--tb-surface-2);
+  --sunk:var(--tb-sunk);
+  --paper:var(--tb-surface);
+  --fg:var(--tb-ink);
+  --fg-2:var(--tb-ink-soft);
+  --fg-3:var(--tb-ink-faint);
+  --fg-4:var(--tb-ink-faint);
+  --ink:var(--tb-ink);
+  --line:var(--tb-line);
+  --line-2:var(--tb-line-strong);
+  --mark-bg:var(--tb-accent-soft);
+  --mark-fg:var(--tb-ink);
+  --r:var(--tb-r-m);
+  --r-sm:var(--tb-r-s);
+  --shadow-1:var(--tb-shadow-1);
+  --shadow-2:var(--tb-shadow-2);
+  --shadow-3:var(--tb-shadow-2);
+  --font:var(--tb-font);
+  --mono:var(--tb-mono);
+}

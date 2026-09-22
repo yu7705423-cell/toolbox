@@ -131,3 +131,76 @@
   --tb-shadow-1:none;
   --tb-shadow-2:0 2px 12px rgba(0,0,0,.6);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   外壳的零件：切换工具的面板、兜底的角标按钮、各工具顶栏里那两颗按钮。
+   这些类名全站通用，shell.js 认的就是它们。
+   ═══════════════════════════════════════════════════════════ */
+
+/* 顶栏里的标准按钮：工具自己的头部放两个，长这样 */
+.tb-btn{
+  flex:none;display:grid;place-items:center;
+  width:30px;height:30px;padding:0;
+  font-family:var(--tb-font);font-size:14px;line-height:1;
+  color:var(--tb-ink-soft);background:transparent;
+  border:1px solid var(--tb-line-strong);border-radius:var(--tb-r-pill);
+  cursor:pointer;text-decoration:none;
+}
+.tb-btn:active{background:var(--tb-sunk);color:var(--tb-ink)}
+
+/* 工具没地方放按钮时的兜底：右下角一颗 */
+.tb-fab{
+  position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));
+  width:38px;height:38px;z-index:9998;
+  font-size:15px;line-height:1;cursor:pointer;
+  color:var(--tb-ink);background:var(--tb-surface);
+  border:1px solid var(--tb-line-strong);border-radius:var(--tb-r-pill);
+  box-shadow:var(--tb-shadow-2);
+}
+
+/* 切换面板：从右边滑进来，盖在工具上面，不动工具自己的布局 */
+.tb-sheet{
+  position:fixed;inset:0;z-index:9999;
+  opacity:0;pointer-events:none;transition:opacity .16s;
+  font-family:var(--tb-font);
+}
+.tb-sheet.on{opacity:1;pointer-events:auto}
+.tb-sheet-scrim{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.tb-sheet-panel{
+  position:absolute;top:0;right:0;bottom:0;width:min(300px,86vw);
+  overflow-y:auto;padding:calc(env(safe-area-inset-top) + 16px) 14px
+           calc(env(safe-area-inset-bottom) + 20px);
+  background:var(--tb-bg);border-left:1px solid var(--tb-line);
+  transform:translateX(12px);transition:transform .16s;
+}
+.tb-sheet.on .tb-sheet-panel{transform:none}
+.tb-sheet-home{
+  display:block;padding:8px 10px;margin-bottom:6px;
+  font-size:13px;color:var(--tb-ink);text-decoration:none;
+  border:1px solid var(--tb-line);border-radius:var(--tb-r-m);
+}
+.tb-sheet-sec{
+  font-family:var(--tb-mono);font-size:10px;letter-spacing:.16em;
+  color:var(--tb-ink-faint);margin:14px 0 6px 10px;
+}
+.tb-sheet-item{
+  display:grid;grid-template-columns:26px 1fr;gap:2px 10px;
+  padding:9px 10px;margin-bottom:2px;border-radius:var(--tb-r-m);
+  text-decoration:none;color:var(--tb-ink);
+}
+.tb-sheet-item:active{background:var(--tb-surface-2)}
+.tb-sheet-item.on{background:var(--tb-accent);color:var(--tb-accent-ink)}
+.tb-sheet-item .tb-g{
+  grid-row:1/3;width:26px;height:26px;display:grid;place-items:center;
+  font-size:12px;border:1px solid var(--tb-line-strong);border-radius:8px;
+}
+.tb-sheet-item.on .tb-g{border-color:var(--tb-accent-ink)}
+.tb-sheet-item .tb-n{font-size:14px;font-weight:600}
+.tb-sheet-item .tb-d{font-size:11px;color:var(--tb-ink-faint)}
+.tb-sheet-item.on .tb-d{color:var(--tb-accent-ink);opacity:.75}
+.tb-sheet-theme{
+  display:block;width:100%;margin-top:16px;padding:9px 10px;
+  font-family:var(--tb-font);font-size:13px;text-align:left;cursor:pointer;
+  color:var(--tb-ink-soft);background:transparent;
+  border:1px solid var(--tb-line);border-radius:var(--tb-r-m);
+}

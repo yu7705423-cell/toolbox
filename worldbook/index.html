@@ -13,6 +13,9 @@
 <meta name="theme-color" content="#0f1115">
 <title>世界书生成器</title>
 <link rel="stylesheet" href="style.css">
+<!-- 工具箱的统一外观：这两行必须排在本文件自己的样式之后，才压得住它原来的颜色 -->
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="../skin/worldbook.css">
 </head>
 <body>
   <div id="app" class="app">
@@ -21,6 +24,7 @@
       <h1 class="brand">世界书生成器</h1>
       <div class="topbar-right">
         <span id="presetBadge" class="badge" title="当前主模型">未配置</span>
+        <button class="tb-btn" data-tb-switch type="button" title="切换工具" aria-label="切换工具">⇄</button>
       </div>
     </header>
     <div class="body">
@@ -43,5 +47,6 @@
   <div id="modalRoot"></div>
   <script src="core.js"></script>
   <script src="gen.js"></script>
+<script src="../shell.js" data-tool="wbgen"></script>
 </body>
 </html>

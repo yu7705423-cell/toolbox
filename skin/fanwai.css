@@ -1,0 +1,37 @@
+/*
+  番外生成器的换肤表。
+  不改它一条 CSS 规则，只把它自己那套变量的值指到 --tb-* 上。
+  三个选择器一起写是为了压过它原来的 :root / [data-theme] 两套值 ——
+  权重一样时后加载的赢，而这个文件在它的 <style> 之后。
+*/
+/*
+  选择器为什么写成 :root:root:root —— 不是手滑。
+
+  这些工具自己的暗色块长这样：
+
+      @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#131211 } }
+
+  那个 :not() 让它的权重是 (0,0,2,0)，比普通的 :root (0,0,1,0) 高，
+  所以单写 :root 压不住它，夜里就会露出它自己的老颜色。
+  重复三次把权重抬到 (0,0,3,0)，才稳稳盖过去。
+
+  想给某个工具单独换颜色，写得比这更具体就行（比如加一层 html）。
+*/
+:root:root:root{
+  --bg:var(--tb-bg);
+  --surface:var(--tb-surface);
+  --surface-2:var(--tb-surface-2);
+  --line:var(--tb-line);
+  --line-strong:var(--tb-line-strong);
+  --text:var(--tb-ink);
+  --text-2:var(--tb-ink-soft);
+  --muted:var(--tb-ink-faint);
+  --accent:var(--tb-accent);
+  --accent-soft:var(--tb-accent-soft);
+  --danger:var(--tb-danger);
+  --ok:var(--tb-ok);
+  --radius:var(--tb-r-m);
+  --radius-sm:var(--tb-r-s);
+  --shadow:var(--tb-shadow-1);
+  --font:var(--tb-font);
+}

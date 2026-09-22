@@ -5,8 +5,8 @@
   改过 index.html / theme.css 之后把 VERSION 加一，旧缓存会被清掉，
   不然手机上会一直看到旧版本。
 */
-const VERSION = 'toolbox-v4';
-const SHELL = ['./', 'index.html', 'theme.css', 'manifest.json', 'icon-192.png'];
+const VERSION = 'toolbox-v5';
+const SHELL = ['./', 'index.html', 'theme.css', 'shell.js', 'manifest.json', 'icon-192.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(

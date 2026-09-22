@@ -276,6 +276,7 @@ label input:focus{border-color:var(--tb-ink)}
   </form>
 </dialog>
 
+<script src="shell.js"></script>
 <script>
 /* =====================================================================
    内置的工具清单 —— 出厂设置。
@@ -285,45 +286,15 @@ label input:focus{border-color:var(--tb-ink)}
    group：'diy' 是拿来做东西的，'stash' 是拿来存东西的。
    desc  ：越短越好，卡片上最多两行，写长了会被截断。
    ===================================================================== */
-const PAGES = 'https://yu7705423-cell.github.io';
+const PAGES = location.origin;   // 路径行显示用；工具地址一律由 shell.js 算
 
-const BUILTIN = [
-  { id:'fanwai',  name:'番外生成器',    glyph:'番', group:'diy',
-    desc:'选几个梗，产出一段 Prompt',
-    when:'想让 AI 写一段番外，但说不清自己要什么感觉的时候',
-    store:'东西存本机 · 不用配 API（它只产 Prompt，拿去哪用你定）',
-    url:PAGES+'/fanwai/' },
-
-  { id:'wbgen',   name:'世界书生成器',  glyph:'世', group:'diy',
-    desc:'写世界书，带审查和评分',
-    when:'给 AI 角色定规矩、写长期设定的时候。写完存进世界书库',
-    store:'东西存本机 · 要先配一个 API 密钥',
-    url:PAGES+'/toolbox/worldbook/' },
-
-  { id:'imgtest', name:'图床工具箱',    glyph:'图', group:'diy',
-    desc:'自建图床的上传和管理',
-    when:'要把一张图变成能到处贴的链接的时候',
-    store:'配置存本机，图存你自己的 R2 · 要先填 R2 密钥',
-    url:PAGES+'/imgtest/imagehosttoolkit.html' },
-
-  { id:'read',    name:'喵喵书阁',      glyph:'书', group:'stash',
-    desc:'存番外和长篇，能朗读',
-    when:'写完或收集来的长篇，想当书一样翻的时候',
-    store:'东西存本机 · 不用配任何东西',
-    url:PAGES+'/read/' },
-
-  { id:'memory',  name:'Chat Archive',  glyph:'档', group:'stash',
-    desc:'JSON 备份当聊天记录翻',
-    when:'想回头看某段聊天的时候。一份备份 = 一段对话',
-    store:'东西存本机 · 完全不联网',
-    url:PAGES+'/memory/chat-archive.html' },
-
-  { id:'wblib',   name:'世界书库',      glyph:'库', group:'stash',
-    desc:'世界书的存放、导入导出和备份',
-    when:'找一本写好的世界书，或者把别人的导进来的时候',
-    store:'和生成器共用同一个库 · 不用配 API',
-    url:PAGES+'/toolbox/worldbook/library.html' },
-];
+// 工具清单来自 shell.js —— 全站唯一一份。合集页的卡片、每个工具里的
+// 切换面板，读的都是它，所以加新工具只要改那一个地方。
+const BUILTIN = TOOLBOX.TOOLS.map(t => ({
+  id: t.id, name: t.name, glyph: t.glyph, group: t.group,
+  desc: t.desc, when: t.when, store: t.store,
+  url: TOOLBOX.urlOf(t)
+}));
 
 const GROUPS = [
   { key:'pin',   label:'置顶', note:'你自己挑上来的' },
@@ -445,8 +416,11 @@ function card(t, i, len){
   const el = document.createElement('a');
   el.className = 'card' + (isPinned(t.id) ? ' pin' : '') + (t.url ? '' : ' no-url');
   el.href = t.url || '#';
-  // 加到主屏幕后是独立窗口，_blank 会把人甩回 Safari，所以那种情况原地跳
-  if(t.url && !matchMedia('(display-mode:standalone)').matches){
+  // 自家的工具原地跳 —— 它们本来就是同一个站，新标签反而会切断"回工具箱"那条路。
+  // 只有指向站外的自定义卡片才另开一个标签。
+  let external = false;
+  try{ external = new URL(t.url, location.href).origin !== location.origin; }catch(e){}
+  if(t.url && external){
     el.target = '_blank';
     el.rel = 'noopener';
   }

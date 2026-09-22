@@ -1,0 +1,32 @@
+/* 图床工具箱的换肤表。规则不动，只换变量的值。 */
+/*
+  选择器为什么写成 :root:root:root —— 不是手滑。
+
+  这些工具自己的暗色块长这样：
+
+      @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#131211 } }
+
+  那个 :not() 让它的权重是 (0,0,2,0)，比普通的 :root (0,0,1,0) 高，
+  所以单写 :root 压不住它，夜里就会露出它自己的老颜色。
+  重复三次把权重抬到 (0,0,3,0)，才稳稳盖过去。
+
+  想给某个工具单独换颜色，写得比这更具体就行（比如加一层 html）。
+*/
+:root:root:root{
+  --bg:var(--tb-bg);
+  --bg-panel:var(--tb-surface);
+  --bg-raised:var(--tb-surface-2);
+  --border:var(--tb-line);
+  --text:var(--tb-ink);
+  --text-dim:var(--tb-ink-soft);
+  --text-faint:var(--tb-ink-faint);
+  --accent:var(--tb-accent);
+  --accent-text:var(--tb-accent-ink);
+  --danger:var(--tb-danger);
+  --danger-bg:var(--tb-danger-soft);
+  --ok:var(--tb-ok);
+  --ok-bg:var(--tb-ok-soft);
+  --radius:var(--tb-r-m);
+  --sans:var(--tb-font);
+  --mono:var(--tb-mono);
+}
