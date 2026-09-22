@@ -105,6 +105,16 @@ h1{margin:0;font-size:24px;line-height:1.2;font-weight:600;letter-spacing:.02em}
   font-size:11.5px;color:var(--tb-ink-soft);line-height:1.45;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
+body.explain .desc{-webkit-line-clamp:99}
+/* 说明模式：平时藏着的两行。展开时卡片会变高，这是有意的 —— 想看清楚就得占地方 */
+.more{display:none;font-size:11.5px;color:var(--tb-ink-soft);line-height:1.55}
+.more b{
+  display:block;font-family:var(--tb-mono);font-size:9.5px;font-weight:500;
+  letter-spacing:.12em;color:var(--tb-ink-faint);margin-top:4px;
+}
+body.explain .more{display:block}
+.sec-note{display:none;font-size:11.5px;color:var(--tb-ink-soft);margin:-4px 0 10px;line-height:1.5}
+body.explain .sec-note{display:block}
 .path{
   display:none;font-family:var(--tb-mono);font-size:10px;color:var(--tb-ink-faint);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -214,6 +224,7 @@ label input:focus{border-color:var(--tb-ink)}
     <h1>工具箱</h1>
     <p class="sub" id="count"></p>
   </div>
+  <button class="icon-btn" id="explain-btn" title="这些都是干嘛的" aria-pressed="false">?</button>
   <button class="icon-btn" id="theme-btn" title="日夜">◐</button>
   <button class="icon-btn" id="edit-btn" title="整理" aria-pressed="false">✎</button>
 </header>
@@ -233,7 +244,7 @@ label input:focus{border-color:var(--tb-ink)}
     <button id="reset-btn">恢复默认</button>
     <span id="hidden-note"></span>
   </div>
-  <div>整理模式（右上 ✎）里能改地址、置顶、换栏、调顺序。配置只存在这台设备上，换手机记得先导出一份。</div>
+  <div>不知道哪个是干嘛的，按右上角 <b style="color:var(--tb-ink-soft)">?</b> —— 每张卡会展开「什么时候用」和「东西存哪」。<br>整理模式（✎）里能改地址、置顶、换栏、调顺序。配置只存在这台设备上，换手机记得先导出一份。</div>
 </footer>
 
 <input type="file" id="import-file" accept="application/json,.json" hidden>
@@ -244,6 +255,7 @@ label input:focus{border-color:var(--tb-ink)}
     <h2 id="sheet-title">编辑</h2>
     <label><span>名字</span><input id="f-name" required maxlength="20"></label>
     <label><span>一句话说明</span><input id="f-desc" maxlength="40" placeholder="短一点，卡片上只留一两行"></label>
+    <label><span>什么时候用（按 ? 时显示）</span><input id="f-when" maxlength="60" placeholder="可留空"></label>
     <label><span>网址</span><input id="f-url" type="url" inputmode="url" placeholder="https://"></label>
     <label><span>图标（一个字或 emoji）</span><input id="f-glyph" maxlength="2"></label>
     <div class="field-label">放哪一栏</div>
@@ -277,35 +289,53 @@ const PAGES = 'https://yu7705423-cell.github.io';
 
 const BUILTIN = [
   { id:'fanwai',  name:'番外生成器',    glyph:'番', group:'diy',
-    desc:'选几个梗，产出一段 Prompt',   url:PAGES+'/fanwai/' },
-
-  { id:'imgtest', name:'图床工具箱',    glyph:'图', group:'diy',
-    desc:'自建图床的上传和管理',        url:PAGES+'/imgtest/imagehosttoolkit.html' },
+    desc:'选几个梗，产出一段 Prompt',
+    when:'想让 AI 写一段番外，但说不清自己要什么感觉的时候',
+    store:'东西存本机 · 不用配 API（它只产 Prompt，拿去哪用你定）',
+    url:PAGES+'/fanwai/' },
 
   { id:'wbgen',   name:'世界书生成器',  glyph:'世', group:'diy',
-    desc:'写世界书，带审查、评分和修订',  url:PAGES+'/toolbox/worldbook/' },
+    desc:'写世界书，带审查和评分',
+    when:'给 AI 角色定规矩、写长期设定的时候。写完存进世界书库',
+    store:'东西存本机 · 要先配一个 API 密钥',
+    url:PAGES+'/toolbox/worldbook/' },
+
+  { id:'imgtest', name:'图床工具箱',    glyph:'图', group:'diy',
+    desc:'自建图床的上传和管理',
+    when:'要把一张图变成能到处贴的链接的时候',
+    store:'配置存本机，图存你自己的 R2 · 要先填 R2 密钥',
+    url:PAGES+'/imgtest/imagehosttoolkit.html' },
 
   { id:'read',    name:'喵喵书阁',      glyph:'书', group:'stash',
-    desc:'存番外和长篇，能朗读',        url:PAGES+'/read/' },
+    desc:'存番外和长篇，能朗读',
+    when:'写完或收集来的长篇，想当书一样翻的时候',
+    store:'东西存本机 · 不用配任何东西',
+    url:PAGES+'/read/' },
 
   { id:'memory',  name:'Chat Archive',  glyph:'档', group:'stash',
-    desc:'JSON 备份当聊天记录翻',       url:PAGES+'/memory/chat-archive.html' },
+    desc:'JSON 备份当聊天记录翻',
+    when:'想回头看某段聊天的时候。一份备份 = 一段对话',
+    store:'东西存本机 · 完全不联网',
+    url:PAGES+'/memory/chat-archive.html' },
 
   { id:'wblib',   name:'世界书库',      glyph:'库', group:'stash',
-    desc:'世界书的存放、导入导出和备份',  url:PAGES+'/toolbox/worldbook/library.html' },
+    desc:'世界书的存放、导入导出和备份',
+    when:'找一本写好的世界书，或者把别人的导进来的时候',
+    store:'和生成器共用同一个库 · 不用配 API',
+    url:PAGES+'/toolbox/worldbook/library.html' },
 ];
 
 const GROUPS = [
-  { key:'pin',   label:'置顶' },
-  { key:'diy',   label:'DIY' },
-  { key:'stash', label:'收纳' },
+  { key:'pin',   label:'置顶', note:'你自己挑上来的' },
+  { key:'diy',   label:'DIY',  note:'拿来做东西的。做完的成果一般会存进下面「收纳」里的某一个' },
+  { key:'stash', label:'收纳', note:'拿来存东西的。打开就是你已有的东西，不用配 API、不用联网' },
 ];
 
 /* =====================================================================
    本地状态：只存「和出厂设置的差异」。
    ===================================================================== */
 const STORE = 'toolbox.v1';
-const blank = () => ({theme:'auto', order:[], hidden:[], pinned:[], overrides:{}, custom:[]});
+const blank = () => ({theme:'auto', explain:false, order:[], hidden:[], pinned:[], overrides:{}, custom:[]});
 
 let state = load();
 
@@ -342,7 +372,7 @@ function isPinned(id){ return state.pinned.includes(id); }
 function sections(){
   const v = visible();
   return GROUPS.map(g => ({
-    key:g.key, label:g.label,
+    key:g.key, label:g.label, note:g.note,
     items: g.key === 'pin'
       ? v.filter(t => isPinned(t.id))
       : v.filter(t => !isPinned(t.id) && (t.group || 'diy') === g.key)
@@ -371,7 +401,7 @@ function render(){
 
   // 搜索时不分栏，直接平铺结果 —— 找东西的时候分类只会碍事
   const groups = kw
-    ? [{key:'hit', label:'', items: visible().filter(t =>
+    ? [{key:'hit', label:'', note:'', items: visible().filter(t =>
         (t.name + ' ' + (t.desc||'')).toLowerCase().includes(kw))}]
     : sections();
 
@@ -389,6 +419,12 @@ function render(){
       h.className = 'sec';
       h.innerHTML = '<b>' + g.label + '</b><i></i>';
       main.appendChild(h);
+      if(g.note){
+        const n = document.createElement('div');
+        n.className = 'sec-note';
+        n.textContent = g.note;
+        main.appendChild(n);
+      }
     }
     const wrap = document.createElement('div');
     wrap.className = 'cards';
@@ -420,6 +456,8 @@ function card(t, i, len){
       <div class="name">${esc(t.name)}</div>
     </div>
     ${t.desc ? `<div class="desc">${esc(t.desc)}</div>` : ''}
+    ${t.when ? `<div class="more"><b>什么时候用</b>${esc(t.when)}</div>` : ''}
+    ${t.store ? `<div class="more"><b>东西存哪</b>${esc(t.store)}</div>` : ''}
     <div class="path">${esc(pathOf(t.url))}</div>
     <div class="card-tools"></div>`;
 
@@ -489,6 +527,7 @@ function esc(s){
 const sheet = document.getElementById('sheet');
 const fName = document.getElementById('f-name');
 const fDesc = document.getElementById('f-desc');
+const fWhen = document.getElementById('f-when');
 const fUrl = document.getElementById('f-url');
 const fGlyph = document.getElementById('f-glyph');
 const groupBox = document.getElementById('f-group');
@@ -516,6 +555,7 @@ function openSheet(id){
   document.getElementById('sheet-title').textContent = t ? '编辑 ' + t.name : '添加一个';
   fName.value = t ? t.name : '';
   fDesc.value = t ? (t.desc || '') : '';
+  fWhen.value = t ? (t.when || '') : '';
   fUrl.value = t ? (t.url || '') : '';
   fGlyph.value = t ? (t.glyph || '') : '';
   pickedGroup = t ? (t.group || 'diy') : 'diy';
@@ -531,6 +571,7 @@ document.getElementById('sheet-form').addEventListener('submit', e => {
   const patch = {
     name: fName.value.trim() || '未命名',
     desc: fDesc.value.trim(),
+    when: fWhen.value.trim(),
     url: fUrl.value.trim(),
     glyph: fGlyph.value.trim(),
     group: pickedGroup,
@@ -565,6 +606,16 @@ document.getElementById('sheet-delete').onclick = () => {
    顶部按钮 / 导入导出
    ===================================================================== */
 document.getElementById('add-btn').onclick = () => openSheet(null);
+
+const explainBtn = document.getElementById('explain-btn');
+function applyExplain(){
+  document.body.classList.toggle('explain', !!state.explain);
+  explainBtn.setAttribute('aria-pressed', String(!!state.explain));
+}
+explainBtn.onclick = () => {
+  state.explain = !state.explain;
+  save(); applyExplain();
+};
 
 const editBtn = document.getElementById('edit-btn');
 editBtn.onclick = () => {
@@ -608,14 +659,14 @@ importFile.onchange = async () => {
   if(!f) return;
   try{
     state = Object.assign(blank(), JSON.parse(await f.text()));
-    save(); applyTheme(); render(); toast('导进来了');
+    save(); applyTheme(); applyExplain(); render(); toast('导进来了');
   }catch(e){ toast('这个文件读不了'); }
   importFile.value = '';
 };
 
 document.getElementById('reset-btn').onclick = () => {
   if(!confirm('恢复默认？自己加的卡片、改过的地址和置顶都会没有。')) return;
-  state = blank(); save(); applyTheme(); render(); toast('回到出厂了');
+  state = blank(); save(); applyTheme(); applyExplain(); render(); toast('回到出厂了');
 };
 
 qInput.addEventListener('input', render);
@@ -630,6 +681,7 @@ function toast(msg){
 }
 
 applyTheme();
+applyExplain();
 render();
 
 if('serviceWorker' in navigator){
